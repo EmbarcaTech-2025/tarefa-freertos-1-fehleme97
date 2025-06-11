@@ -51,7 +51,7 @@ O sistema é composto por duas tarefas principais:
 | Buzzer      | GPIO 21       | Saída PWM da sirene |
 | Botão A     | GPIO 5        | Suspender LED       |
 | Botão B     | GPIO 6        | Suspender Buzzer    |
-| LED RGB     | GPIO 11,12,13 | Verde, Azul, Vermelho |
+| LED RGB     | GPIO 11,12,13 | Vermelho, Verde e Azul |
 
 # 🔄 FLUXO DE FUNCIONAMENTO
 
