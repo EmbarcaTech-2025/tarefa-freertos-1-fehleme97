@@ -25,6 +25,7 @@ O sistema é composto por duas tarefas principais:
 ```
 /tarefa-freertos-1-fehleme97
 │── include/            # Arquivos auxiliares
+│── FreeRTOS            # Arquivos da biblioteca da FreeRTOS utilizado no projeto
 │── tarefa-freertos-1-fehleme97.c        # Código principal com FreeRTOS
 │── CMakeLists.txt      # Script de build do projeto
 │── README.md           # Este documento
