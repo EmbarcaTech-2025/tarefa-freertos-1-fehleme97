@@ -38,8 +38,8 @@ O sistema é composto por duas tarefas principais:
 - ✅ Reproduz som de sirene progressiva no buzzer  
 - ✅ Alternância de cores no LED RGB (vermelho, verde, azul)  
 - ✅ Controle de execução por botões físicos:  
-  - Botão A (GPIO 5): Liga/desliga o LED RGB  
-  - Botão B (GPIO 6): Liga/desliga o buzzer (sirene)  
+  - Botão A (GPIO 5): Suspende/retoma o LED RGB  
+  - Botão B (GPIO 6): Suspende/retoma o buzzer (sirene)  
 - ✅ Debounce de botão implementado  
 - ✅ Suspensão de tarefa com `vTaskSuspend()` e retomada com `vTaskResume()`  
 - ✅ Comentários explicativos no código para aprendizado    
@@ -56,8 +56,8 @@ O sistema é composto por duas tarefas principais:
 # 🔄 FLUXO DE FUNCIONAMENTO
 
 1. Ao ligar o sistema, LED RGB e sirene já estão **ativos por padrão**.
-2. Pressione o **botão A** (GPIO 5) para alternar a execução do LED RGB.
-3. Pressione o **botão B** (GPIO 6) para alternar a execução da sirene.
+2. Pressione o **botão A** (GPIO 5) para suspender ou retomar a execução do LED RGB.
+3. Pressione o **botão B** (GPIO 6) para suspender ou retomar a execução da sirene.
 4. O sistema continua operando em tempo real com **gerenciamento multitarefa via FreeRTOS**.
 
 # 🖥️ Execução e Gravação no Pico
