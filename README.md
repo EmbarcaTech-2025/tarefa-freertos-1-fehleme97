@@ -23,7 +23,7 @@ O sistema é composto por duas tarefas principais:
 # 🗂️ ESTRUTURA DO PROJETO
 
 ```
-/projeto_sirene_led
+/tarefa-freertos-1-fehleme97
 │── include/            # Arquivos auxiliares
 │── tarefa-freertos-1-fehleme97.c        # Código principal com FreeRTOS
 │── CMakeLists.txt      # Script de build do projeto
