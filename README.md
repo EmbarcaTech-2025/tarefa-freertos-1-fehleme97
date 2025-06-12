@@ -45,7 +45,6 @@ O sistema é composto por duas tarefas principais:
 - ✅ Debounce de botão implementado  
 - ✅ Suspensão de tarefa com `vTaskSuspend()` e retomada com `vTaskResume()`  
 - ✅ Exibição do status em tempo real no **display OLED SSD1306**  
-- ✅ Comentários explicativos no código para aprendizado  
 
 # 🌐 CONFIGURAÇÕES DE HARDWARE
 
