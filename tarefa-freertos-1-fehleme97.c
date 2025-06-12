@@ -5,11 +5,33 @@
 #include "hardware/pwm.h"
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
+#include "ssd1306.h"
+#include <string.h>
 
 // Definições dos pinos utilizados
 const uint BUZZER_GPIO = 21;
 const uint BOTAO_A_GPIO = 5;
 const uint BOTAO_B_GPIO = 6;
+const uint I2C_SDA = 14;              // Pino SDA do OLED
+const uint I2C_SCL = 15;              // Pino SCL do OLED
+
+// Parâmetros do sistema
+#define SCREEN_WIDTH 128              // Largura da tela OLED
+#define SCREEN_HEIGHT 64              // Altura da tela OLED
+
+// Instâncias do display
+ssd1306_t oled;
+uint8_t oled_frame[1024];
+
+// Tornar globais:
+uint8_t ssd[ssd1306_buffer_length];
+struct render_area frame_area = {
+    .start_column = 0,
+    .end_column = ssd1306_width - 1,
+    .start_page = 0,
+    .end_page = ssd1306_n_pages - 1
+};
+
 
 // Handles das tarefas para controle posterior (suspensão/retomada)
 TaskHandle_t handle_led = NULL;
@@ -110,6 +132,11 @@ void monitor_button_task() {
     static bool led_suspenso = false;
     static bool buzzer_suspenso = false;
 
+    memset(ssd, 0, ssd1306_buffer_length);
+    render_on_display(ssd, &frame_area);
+    calculate_render_area_buffer_length(&frame_area);
+
+
     while (true) {
 
         // Se o botão A for pressionado, alterna o estado da tarefa do LED
@@ -117,9 +144,18 @@ void monitor_button_task() {
             if (!led_suspenso) {
                 vTaskSuspend(handle_led); // Suspende a tarefa do LED
                 led_suspenso = true;
+
+                // Limpa tela e escreve
+                memset(ssd, 0, ssd1306_buffer_length);
+                ssd1306_draw_string(ssd, 0, 32, "  LED SUSPENSO");
+                render_on_display(ssd, &frame_area);
             } else {
                 vTaskResume(handle_led); // Retoma a tarefa do LED
                 led_suspenso = false;
+                // Limpa tela e escreve
+                memset(ssd, 0, ssd1306_buffer_length);
+                ssd1306_draw_string(ssd, 0, 32, "  LED RETOMADO");
+                render_on_display(ssd, &frame_area);
             }
         }
 
@@ -128,9 +164,18 @@ void monitor_button_task() {
             if (!buzzer_suspenso) {
                 vTaskSuspend(handle_buzzer); // Suspende a tarefa do buzzer
                 buzzer_suspenso = true;
+
+                // Limpa tela e escreve
+                memset(ssd, 0, ssd1306_buffer_length);
+                ssd1306_draw_string(ssd, 0, 32, " BUZZER SUSPENSO");
+                render_on_display(ssd, &frame_area);
             } else {
                 vTaskResume(handle_buzzer); // Retoma a tarefa do buzzer
                 buzzer_suspenso = false;
+                // Limpa tela e escreve
+                memset(ssd, 0, ssd1306_buffer_length);
+                ssd1306_draw_string(ssd, 0, 32, " BUZZER RETOMADO");
+                render_on_display(ssd, &frame_area);
             }
         }
 
@@ -138,14 +183,35 @@ void monitor_button_task() {
     }
 }
 
+
 // Função principal
 int main() {
     stdio_init_all(); 
 
+    // Inicialização do display OLED
+    i2c_init(i2c1, ssd1306_i2c_clock * 1000);
+    gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(I2C_SDA);
+    gpio_pull_up(I2C_SCL);
+
+    ssd1306_init();
+
+    memset(ssd, 0, ssd1306_buffer_length);
+    render_on_display(ssd, &frame_area);
+    calculate_render_area_buffer_length(&frame_area);
+
+    // Mensagem inicial no display
+    ssd1306_draw_string(ssd, 0, 16, "    SISTEMA  ");
+    ssd1306_draw_string(ssd, 0, 32, "   INICIANDO.. ");
+    render_on_display(ssd, &frame_area);
+    sleep_ms(3000);
+
     // Criação das tarefas e armazenamento dos seus handles
-    xTaskCreate(led_task, "LED_Task", 256, NULL, 2, &handle_led);
-    xTaskCreate(task_buzzer, "Buzzer_Task", 256, NULL, 1, &handle_buzzer);
-    xTaskCreate(monitor_button_task, "Botao_Task", 256, NULL, 3, NULL);
+    xTaskCreate(led_task, "LED_Task", 512, NULL, 2, &handle_led);
+    xTaskCreate(task_buzzer, "Buzzer_Task", 512, NULL, 1, &handle_buzzer);
+    xTaskCreate(monitor_button_task, "Botao_Task", 1024, NULL, 3, NULL);
+
 
     // Inicia o agendador do FreeRTOS
     vTaskStartScheduler();

@@ -50,6 +50,7 @@ pico_sdk_init()
 add_executable(tarefa-freertos-1-fehleme97 
         tarefa-freertos-1-fehleme97.c
         include/FreeRTOSConfig.h
+        include/ssd1306_i2c.c
 )
 
 pico_set_program_name(tarefa-freertos-1-fehleme97 "tarefa-freertos-1-fehleme97")

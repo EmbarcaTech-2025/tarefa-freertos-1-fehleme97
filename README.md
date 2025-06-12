@@ -1,4 +1,4 @@
-# 🔔 PROJETO: CONTROLE DE TAREFAS COM SIRENE E LED ATRAVÉS DO FreeRTOS - BITDOGLAB (PICO W + FreeRTOS)
+# 🔔 PROJETO: TAREFAS COM SIRENE E LED ATRAVÉS DO FreeRTOS - BITDOGLAB
 
 **Autor:**  
 - FELIPE LEME CORREA DA SILVA
@@ -17,18 +17,20 @@ O sistema é composto por duas tarefas principais:
 - Uma tarefa que reproduz uma **sirene progressiva** utilizando o PWM.
 - Uma tarefa que alterna as cores do **LED RGB**.
 - Ambas podem ser **suspensas ou retomadas** por botões físicos distintos.
+- O status da execução é exibido em tempo real no **display OLED SSD1306**, informando se o LED ou o buzzer foram suspensos ou retomados.
 
 ---
 
 # 🗂️ ESTRUTURA DO PROJETO
 
 ```
-/projeto_sirene_led
-│── include/            # Arquivos auxiliares
+/tarefa-freertos-1-fehleme97
+│── include/                             # Arquivos auxiliares
+│── FreeRTOS                             # Arquivos da biblioteca da FreeRTOS utilizado no projeto
 │── tarefa-freertos-1-fehleme97.c        # Código principal com FreeRTOS
-│── CMakeLists.txt      # Script de build do projeto
-│── README.md           # Este documento
-│── LICENSE.txt         # Licença do projeto
+│── CMakeLists.txt                       # Script de build do projeto
+│── README.md                            # Este documento
+│── LICENSE.txt                          # Licença do projeto
 ```
 
 # 🛠️ FUNCIONALIDADES IMPLEMENTADAS
@@ -37,27 +39,30 @@ O sistema é composto por duas tarefas principais:
 - ✅ Reproduz som de sirene progressiva no buzzer  
 - ✅ Alternância de cores no LED RGB (vermelho, verde, azul)  
 - ✅ Controle de execução por botões físicos:  
-  - Botão A (GPIO 5): Liga/desliga o LED RGB  
-  - Botão B (GPIO 6): Liga/desliga o buzzer (sirene)  
+  - Botão A (GPIO 5): Suspende/retoma o LED RGB  
+  - Botão B (GPIO 6): Suspende/retoma o buzzer (sirene)  
 - ✅ Debounce de botão implementado  
 - ✅ Suspensão de tarefa com `vTaskSuspend()` e retomada com `vTaskResume()`  
-- ✅ Comentários explicativos no código para aprendizado    
+- ✅ Exibição do status em tempo real no **display OLED SSD1306**  
+- ✅ Comentários explicativos no código para aprendizado  
 
 # 🌐 CONFIGURAÇÕES DE HARDWARE
 
-| Componente  | GPIO          | Função              |
-|-------------|---------------|---------------------|
-| Buzzer      | GPIO 21       | Saída PWM da sirene |
-| Botão A     | GPIO 5        | Suspender LED       |
-| Botão B     | GPIO 6        | Suspender Buzzer    |
-| LED RGB     | GPIO 11,12,13 | Verde, Azul, Vermelho |
+| Componente  | GPIO          | Função                        |
+|-------------|---------------|-------------------------------|
+| Buzzer      | GPIO 21       | Saída PWM da sirene          |
+| Botão A     | GPIO 5        | Suspender/retomar LED        |
+| Botão B     | GPIO 6        | Suspender/retomar Buzzer     |
+| LED RGB     | GPIO 11,12,13 | Vermelho, Verde e Azul       |
+| Display OLED| GPIO 14,15    | Comunicação I2C (SDA, SCL)   |
 
 # 🔄 FLUXO DE FUNCIONAMENTO
 
 1. Ao ligar o sistema, LED RGB e sirene já estão **ativos por padrão**.
-2. Pressione o **botão A** (GPIO 5) para alternar a execução do LED RGB.
-3. Pressione o **botão B** (GPIO 6) para alternar a execução da sirene.
-4. O sistema continua operando em tempo real com **gerenciamento multitarefa via FreeRTOS**.
+2. Pressione o **botão A** (GPIO 5) para suspender ou retomar a execução do LED RGB.
+3. Pressione o **botão B** (GPIO 6) para suspender ou retomar a execução da sirene.
+4. O status atual das tarefas é mostrado no **display OLED**, com mensagens como "LED SUSPENSO", "BUZZER RETOMADO", etc.
+5. O sistema continua operando em tempo real com **gerenciamento multitarefa via FreeRTOS**.
 
 # 🖥️ Execução e Gravação no Pico
 
@@ -78,6 +83,7 @@ make
 - FreeRTOS (multitarefa cooperativa)
 - PWM da RP2040
 - GPIO para controle digital
+- I2C com display OLED SSD1306
 - BitDogLab (Raspberry Pi Pico W com periféricos integrados)
 
 # 📜 Licença
