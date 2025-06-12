@@ -1,0 +1,20 @@
+1. O que acontece se todas as tarefas tiverem a mesma prioridade?
+
+R: Se todas as tarefas tiverem a mesma prioridade e alguma delas não utilizar bloqueios (como vTaskDelay() 
+ou espera por eventos), essa tarefa pode sobrecarregar a CPU. Isso impede que as demais tarefas do mesmo nível 
+rodem corretamente, resultando em um comportamento travado ou congelado do sistema. 
+
+2. Qual tarefa consome mais tempo da CPU?
+
+R: No caso se tivessemos aplicado em modo semáforo, polling ou laços infinitos sem controle, exigiria mais 
+processamento e desperdiçaria ciclos da CPU.
+
+Porém, como implementamos  tarefas com prioridades definidas e utilizando funções como vTaskCreate(), vTaskDelay(), 
+vTaskSuspend() e vTaskResume(), conseguimos uma alternância equilibrada entre elas, otimizando o uso da CPU 
+e reduzindo sobrecarga. 
+
+3. Quais seriam os riscos de usar polling sem prioridades?
+
+R: O polling verifica constantemente o estado de um recurso (como um botão) em um laço infinito. Sem o uso adequado
+de prioridades ou bloqueios, isso pode causar: Uso excessivo da CPU, gerar atrasos na execução de outras tarefas,
+aumentar o consumo de energia (impactando na eficiência) e piora a otimização do código. 
